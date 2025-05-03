@@ -5,7 +5,7 @@ import FriendProfilePage from './Pages/FriendProfile';
 
 function App() {
   return (
-    <FriendProfilePage></FriendProfilePage>
+    <UserProfilePage></UserProfilePage>
   );
 }
 
