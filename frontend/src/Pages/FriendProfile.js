@@ -1,20 +1,23 @@
 import React from "react";
 import Profile from "../Components/Profile"
 
-function FriendProfile() {
-    // Dummy Data, have to change to get data from backend
-    const friendProfile = {
-        name: "Casey Class",
-        birthday: "01/01/1999",
-        aboutMe: "Hello!"
-    };
+function FriendProfile({ profiles }) {
+  console.log("Profiles data:", profiles);
 
-      // non editable for now, may change in the future for adding friend details
-    return (
-        <div>
-            <Profile data={friendProfile} editable={false} />
-        </div>
-    );
+  if (!profiles || profiles.length === 0) {
+    return <p>Loading profiles...</p>;
+  }
+
+
+  return (
+    <div>
+      <h1>Friend Profiles</h1>
+      {profiles.map((profile) => (
+        <Profile key={profile.id || profile.name} data={profile} />
+      ))}
+    </div>
+  );
+
 };
 
 export default FriendProfile;

@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react'
 import './App.css';
 import UserProfilePage from './Pages/UserProfile';
 import FriendProfilePage from './Pages/FriendProfile';
+import FriendProfile from './Pages/FriendProfile';
 
 function App() {
-  const [data, setData] = useState([{}])
+  const [profiles, setProfiles] = useState([{}])
 
   useEffect(() => {
     fetch("/friends").then(
-      result => result.json()
+      response => response.json()
     ).then(
       data => {
-        setData(data)
+        setProfiles(data)
         console.log(data)
       }
-    )
+    ).catch(error => console.error("Error fetching profiles:", error));
   }, [])
 
   return (
-    <div>
-    </div>
+    <FriendProfilePage profiles={profiles } />
   )
 }
 
