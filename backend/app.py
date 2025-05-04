@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect
 import sqlite3
 from werkzeug.exceptions import abort
-from flask_cors import CORS
+# from flask_cors import CORS
 
 def get_db_connection():
     conn = sqlite3.connect('data/database.db')
@@ -9,7 +9,7 @@ def get_db_connection():
     return conn
 
 app = Flask(__name__)
-CORS(app)  # Allows frontend to communicate with Flask
+#CORS(app)  # Allows frontend to communicate with Flask
 
 # Sample profile data
 profiles = [
@@ -17,6 +17,10 @@ profiles = [
     {"id": 2, "name": "Jane Smith", "birthday": "2000-05-15"}
 ]
 
-@app.route('/api/profiles', methods=['GET'])
-def get_profiles():
-    return jsonify(profiles)
+@app.route("/friends")
+def getFriends():
+  return jsonify(profiles)
+
+
+if __name__ == "__main__":
+  app.run(debug=True)
