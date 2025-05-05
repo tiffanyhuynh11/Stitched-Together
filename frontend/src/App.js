@@ -40,8 +40,8 @@ function App() {
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
+            <Route path="/profile" element={<UserProfilePage profile={myProfile}/>} />
+            <Route path="/friends" element={<FriendProfilePage profiles={profiles} />} />
             <Route path="/friends" element={<FriendsPage />} />
           </Routes>
         </div>
