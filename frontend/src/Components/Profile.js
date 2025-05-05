@@ -1,56 +1,85 @@
-// This is a reusable component, you can add this to friend profile as well and set the editables to false
-// Look at UserProfile.js in Pages for an example of how to use
-
 import React, { useState } from 'react';
-import './Profile.css';
 
 const Profile = ({ data, editable = false, onSave }) => {
-    const [profile, setProfile] = useState(data);
-    const [isEditing, setIsEditing] = useState(false);
+  const [profile, setProfile] = useState(data);
+  const [isEditing, setIsEditing] = useState(false);
 
-    // This handles the user changing the text box for any user detail
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setProfile(prev => ({ ...prev, [name]: value }));
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  };
 
-    // This saves the user's changes and closes editing mode
-    const handleSave = () => {
-        setIsEditing(false);
-        onSave && onSave(profile);
-    };
+  const handleSave = () => {
+    setIsEditing(false);
+    onSave && onSave(profile);
+  };
 
-    return (
-        <div className="profile-container">
-            <h2 className="profile-title">{editable ? "Your Profile" : `${data.name}'s Profile`}</h2>
-            <hr></hr>
-            {/* Edit Mode */}
-            {editable && isEditing ? (
-                <>
-                    <label className="profile-label">Name:</label>
-                    <input name="name" value={profile.name} onChange={handleChange} className="profile-input" />
+  return (
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          {editable ? 'Your Profile' : `${data.name}'s Profile`}
+        </h2>
+        <hr className="mb-4" />
+        {editable && isEditing ? (
+          <>
+            <label className="block font-semibold mt-3">Name:</label>
+            <input
+              name="name"
+              value={profile.name}
+              onChange={handleChange}
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+            />
 
-                    <label className="profile-label">Birthday:</label>
-                    <input type="date" name="birthday" value={profile.birthday} onChange={handleChange} className="profile-input" />
+            <label className="block font-semibold mt-4">Birthday:</label>
+            <input
+              type="date"
+              name="birthday"
+              value={profile.birthday}
+              onChange={handleChange}
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+            />
 
-                    <label className="profile-label">About Me:</label>
-                    <textarea name="aboutMe" value={profile.aboutMe} onChange={handleChange} className="profile-input" />
+            <label className="block font-semibold mt-4">About Me:</label>
+            <textarea
+              name="aboutMe"
+              value={profile.aboutMe}
+              onChange={handleChange}
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+            />
 
-                    <button onClick={handleSave} className="profile-button save">Save</button>
-                </>
-            ) : (
-                <>
-                    <p><strong>Name:</strong> {profile.name}</p>
-                    <p><strong>Birthday:</strong> {profile.birthday}</p>
-                    <p><strong>About Me:</strong> {profile.aboutMe}</p>
+            <button
+              onClick={handleSave}
+              className="mt-5 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Save
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="mb-2">
+              <strong>Name:</strong> {profile.name}
+            </p>
+            <p className="mb-2">
+              <strong>Birthday:</strong> {profile.birthday}
+            </p>
+            <p className="mb-4">
+              <strong>About Me:</strong> {profile.aboutMe}
+            </p>
 
-                    {editable && (
-                        <button onClick={() => setIsEditing(true)} className="profile-button edit">Edit</button>
-                    )}
-                </>
+            {editable && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="w-full bg-gray-300 py-2 font-semibold rounded-md hover:bg-gray-400 transition"
+              >
+                Edit
+              </button>
             )}
-        </div>
-    );
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserProfilePage from './Pages/UserProfile';
 import FriendProfilePage from './Pages/FriendProfile';
-import FriendProfile from './Pages/FriendProfile';
+import HomePage from './Pages/HomePage';
 
 function App() {
   const [profiles, setProfiles] = useState([{}])
@@ -19,7 +19,13 @@ function App() {
   }, [])
 
   return (
-    <FriendProfilePage profiles={profiles } />
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage/>} />
+        <Route path="/profile" element={<UserProfilePage/>} />
+        <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
+      </Routes>
+    </Router>
   )
 }
 
