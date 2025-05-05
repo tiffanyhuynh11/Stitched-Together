@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserProfilePage from './Pages/UserProfile';
 import FriendProfilePage from './Pages/FriendProfile';
 import HomePage from './Pages/HomePage';
+import Navbar from './Components/Navbar';
+import FriendsPage from './Pages/FriendsPage'
 
 function App() {
   const [myProfile, setMyProfile] = useState({})  // for the user profile
@@ -33,11 +35,17 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<HomePage/>} />
-        <Route path="/profile" element={<UserProfilePage profile={myProfile} />} />
-        <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
-      </Routes>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
+            <Route path="/friends" element={<FriendsPage />} />
+          </Routes>
+        </div>
+      </div>
     </Router>
   )
 }

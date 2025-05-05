@@ -15,62 +15,62 @@ const Profile = ({ data, editable = false, onSave }) => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-yellow-100 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl">
+        <h2 className="text-3xl font-extrabold mb-6 text-center text-peach-500">
           {editable ? 'Your Profile' : `${data.name}'s Profile`}
         </h2>
-        <hr className="mb-4" />
+
         {editable && isEditing ? (
           <>
-            <label className="block font-semibold mt-3">Name:</label>
+            <label className="block font-medium mt-4 text-peach-500">Name</label>
             <input
               name="name"
               value={profile.name}
               onChange={handleChange}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+              className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"
             />
 
-            <label className="block font-semibold mt-4">Birthday:</label>
+            <label className="block font-medium mt-4 text-peach-500">Birthday</label>
             <input
               type="date"
               name="birthday"
               value={profile.birthday}
               onChange={handleChange}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+              className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"
             />
 
-            <label className="block font-semibold mt-4">Notes:</label>
+            <label className="block font-medium mt-4 text-peach-500">Notes</label>
             <textarea
               name="notes"
               value={profile.notes}
               onChange={handleChange}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+              className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"
             />
 
             <button
               onClick={handleSave}
-              className="mt-5 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition"
+              className="mt-6 w-full bg-peach-500 text-white font-semibold py-2 rounded-md hover:bg-peach-500 transition"
             >
               Save
             </button>
           </>
         ) : (
           <>
-            <p className="mb-2">
-              <strong>Name:</strong> {profile.name}
+            <p className="mb-4 text-gray-700">
+              <strong className="text-peach-500">Name:</strong> {profile.name}
             </p>
-            <p className="mb-2">
-              <strong>Birthday:</strong> {profile.birthday}
+            <p className="mb-4 text-gray-700">
+              <strong className="text-peach-500">Birthday:</strong> {profile.birthday}
             </p>
-            <p className="mb-4">
-              <strong>Notes:</strong> {profile.notes}
+            <p className="mb-6 text-gray-700">
+              <strong className="text-peach-500">Notes:</strong> {profile.aboutMe}
             </p>
 
             {editable && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="w-full bg-gray-300 py-2 font-semibold rounded-md hover:bg-gray-400 transition"
+                className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 transition"
               >
                 Edit
               </button>
