@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
+//TODO: limit date to before today's date
 const Profile = ({ data, editable = true, onSave, self = false, add = false }) => {
     const [profile, setProfile] = useState(data);
     const [isEditing, setIsEditing] = useState(add);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,9 +19,11 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
         }
 
         setIsEditing(false);
+        
+        const url = add ? "/add-friend" : "/profile"; // diff route for adding a new friend
 
-        fetch("/profile", {
-            method: "POST",
+        fetch(url, {
+            method: "POST", // does this need to change if adding a friend?
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(profile),
         })
@@ -26,13 +31,16 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
             .then(updatedProfile => setProfile(updatedProfile)) // Update state
             .catch(error => console.error("Error updating profile:", error));
         onSave && onSave(profile);
+        {add && (
+            navigate('/friends')
+        )}
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-yellow-100 px-4">
             <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl">
                 <h2 className="text-3xl font-extrabold mb-6 text-center text-peach-500">
-                    {editable ? 'Your Profile' : `${data.name}'s Profile`}
+                    {self ? 'Your Profile' : `${data.name}'s Profile`}
                 </h2>
 
                 {editable && isEditing ? (
@@ -67,7 +75,7 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
 
                         <label className="block font-medium mt-4 text-peach-500">Significant Other</label>
                         <input
-                            name="Significant Other"
+                            name="so"
                             value={profile.so}
                             onChange={handleChange}
                             className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"

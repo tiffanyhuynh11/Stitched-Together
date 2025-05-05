@@ -3,7 +3,7 @@ import Profile from "../Components/Profile"
 
 function NewFriend() {
   const defaultData = {
-    name: '',
+    name: 'New Friend',
     birthday: '',
     relationship: '',
     so: '',
