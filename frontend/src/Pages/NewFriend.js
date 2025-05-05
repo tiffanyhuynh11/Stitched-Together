@@ -2,9 +2,17 @@ import React from "react";
 import Profile from "../Components/Profile"
 
 function NewFriend() {
+  const defaultData = {
+    name: '',
+    birthday: '',
+    relationship: '',
+    so: '',
+    gifts: '',
+    notes: '',
+  };
   return (
     <div>
-      <h1>Add A New Friend</h1>
+      <Profile data={defaultData} add={true} />
     </div>
   );
 

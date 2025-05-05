@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-const Profile = ({ data, editable = true, onSave, self = false }) => {
+const Profile = ({ data, editable = true, onSave, self = false, add = false }) => {
     const [profile, setProfile] = useState(data);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(add);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
