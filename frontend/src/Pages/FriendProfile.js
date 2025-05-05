@@ -11,7 +11,6 @@ function FriendProfile({ profiles }) {
 
   return (
     <div>
-      <h1>Friend Profiles</h1>
       {profiles.map((profile) => (
         <Profile key={profile.id || profile.name} data={profile} />
       ))}
