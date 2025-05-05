@@ -12,7 +12,8 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
         setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
+  const handleSave = (e) => {
+        e.preventDefault(); // Prevent unintended GET requests
         if (!profile.name) {
             alert("Name and birthday cannot be empty!");
             return;
@@ -20,20 +21,24 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
 
         setIsEditing(false);
         
-        const url = add ? "/add-friend" : "/profile"; // diff route for adding a new friend
+        const url = add ? "/new-friend" : "/profile"; // diff route for adding a new friend
 
         fetch(url, {
-            method: "POST", // does this need to change if adding a friend?
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(profile),
+          method: "POST", // does this need to change if adding a friend?
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profile),
         })
-            .then(response => response.json())
-            .then(updatedProfile => setProfile(updatedProfile)) // Update state
+        .then(response => response.json())
+        .then(updatedProfile => {
+          console.log("Server response:", updatedProfile)
+          setProfile(updatedProfile); // Update state
+          if (add) {
+            setTimeout(() => navigate('/my-stitches'), 500); // Redirect after adding new friend
+          }
+
+        }) 
             .catch(error => console.error("Error updating profile:", error));
         onSave && onSave(profile);
-        {add && (
-            navigate('/my-stitches')
-        )}
     };
 
     return (

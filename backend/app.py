@@ -1,3 +1,4 @@
+from http.client import CannotSendRequest
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect
 import sqlite3
 from werkzeug.exceptions import abort
@@ -18,14 +19,6 @@ def add_profile(name, birthday, relationship, so, notes, gifts):
 
 
 app = Flask(__name__)
-
-# Sample profile data
-# profiles = [
-#     {"id": 1, "name": "John Doe", "birthday": "1999-03-01"},
-#     {"id": 2, "name": "Jane Smith", "birthday": "2000-05-15"},
-#     {"id": 3, "name": "Casey", "birthday": "1999-09-26", "aboutMe": "hi"}
-# ]
-
 
 # / - nothing
 # /profile - get and post for editing users profile only COMPLETE
@@ -53,7 +46,6 @@ def userProfile():
   # update User's profile
   elif request.method == 'POST':
         data = request.json
-        print("Received update request:", data)  # Check to make sure it works
 
         cursor.execute("SELECT * FROM profiles ORDER BY id ASC LIMIT 1")
         currentProfile = cursor.fetchone()
@@ -104,24 +96,15 @@ def getFriend(friend_id):
   return jsonify({'error': 'Friend not found'}), 404
 
 
-@app.route("/new-friend")
-def addFriend():
-  conn = get_db_connection()
-  cursor = conn.cursor()
+@app.route("/new-friend", methods=["POST"])
+def newFriend():
+  data = request.get_json()
 
-  data = request.json
-  print("Received update request:", data)  # Check to make sure it works
+  if not data or "name" not in data:
+    return jsonify({"error": "Invalid request: Name is required"}), 400  # Handle missing data
 
-  # send query to DB
-  cursor.execute("INSERT INTO profiles (name, birthday, relationship, so, notes, gifts) VALUES (?, ?, ?, ?, ?, ?)", 
-                 (data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"]))
-  
-  conn.commit()
-  conn.close()
-
-
-
-
+  add_profile(data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"])
+  return jsonify({"message": "Friend Added", "friendProfile": data})
 
 
 @app.errorhandler(500)
