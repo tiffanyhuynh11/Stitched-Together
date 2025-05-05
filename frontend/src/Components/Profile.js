@@ -64,7 +64,7 @@ const Profile = ({ data, editable = false, onSave }) => {
               <strong className="text-peach-500">Birthday:</strong> {profile.birthday}
             </p>
             <p className="mb-6 text-gray-700">
-              <strong className="text-peach-500">Notes:</strong> {profile.aboutMe}
+              <strong className="text-peach-500">Notes:</strong> {profile.notes}
             </p>
 
             {editable && (
