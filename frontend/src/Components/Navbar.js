@@ -13,7 +13,7 @@ const Navbar = () => {
 
       <div className="flex gap-4">
         <Link
-          to="/friends"
+          to="/my-stitches"
           className="text-white font-medium hover:text-red-400 transition"
         >
           Friends

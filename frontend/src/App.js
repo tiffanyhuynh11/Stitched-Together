@@ -4,7 +4,7 @@ import UserProfilePage from './Pages/UserProfile';
 import FriendProfilePage from './Pages/FriendProfile';
 import HomePage from './Pages/HomePage';
 import Navbar from './Components/Navbar';
-import FriendsPage from './Pages/FriendsPage';
+import Stitches from './Pages/Stitches';
 import NewFriendPage from './Pages/NewFriend';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
 
   // fetch Friend data from the backend
   useEffect(() => {
-    fetch("/friends").then(
+    fetch("/my-stitches").then(
       response => response.json()
     ).then(
       data => {
@@ -42,8 +42,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<UserProfilePage profile={myProfile}/>} />
-            <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
-            <Route path="/friends" element={<FriendsPage />} />
+            <Route path="/friend:friendId" element={<FriendProfilePage />} />
+            <Route path="/my-stitches" element={<Stitches />} />
             <Route path="/new-friend" element={<NewFriendPage />} />
           </Routes>
         </div>
@@ -53,3 +53,11 @@ function App() {
 }
 
 export default App;
+
+
+//        # / - nothing
+//# / profile - get and post for editing users profile only COMPLETE
+//# / my - stitches - get all profiles from the db, user is the center node
+//# / friend - add number or something to the url, use the auto incremented id ? Or name ? Grab the 1 friend profile and allow edits(get and post)
+//# / new- friend - post input from frontend into db as new profile
+//# / birthdays - get birthdays and names for each profile(user included) should be able to link to their indiv friend page

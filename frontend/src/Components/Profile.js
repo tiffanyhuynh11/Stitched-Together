@@ -32,7 +32,7 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
             .catch(error => console.error("Error updating profile:", error));
         onSave && onSave(profile);
         {add && (
-            navigate('/friends')
+            navigate('/my-stitches')
         )}
     };
 

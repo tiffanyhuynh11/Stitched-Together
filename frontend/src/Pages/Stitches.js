@@ -2,7 +2,7 @@ import React from "react";
 import FriendsGraph from "../Components/FriendsGraph"
 import { useNavigate } from 'react-router-dom';
 
-function FriendsPage() {
+function Stitches() {
     const navigate = useNavigate();
 
     return (
@@ -20,4 +20,4 @@ function FriendsPage() {
     );
 };
 
-export default FriendsPage;
+export default Stitches;

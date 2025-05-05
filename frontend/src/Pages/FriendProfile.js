@@ -1,22 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Profile from "../Components/Profile"
 
-function FriendProfile({ profiles }) {
-  console.log("Profiles data:", profiles);
+function FriendProfile() {
+  const { friendId } = useParams(); // Get ID from URL
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!profiles || profiles.length === 0) {
-    return <p>Loading profiles...</p>;
-  }
-
+  useEffect(() => {
+    fetch("/friend/${friendId}", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setProfile(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        setError("Failed to fetch profile.");
+        setLoading(false);
+      });
+  }, [friendId]);
 
   return (
     <div>
-      {profiles.map((profile) => (
-        <Profile key={profile.id || profile.name} data={profile} />
-      ))}
+      <Profile key={profile.id} data={profile} editable={true} />
     </div>
   );
-
 };
 
 export default FriendProfile;

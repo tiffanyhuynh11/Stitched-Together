@@ -26,17 +26,13 @@ app = Flask(__name__)
 #     {"id": 3, "name": "Casey", "birthday": "1999-09-26", "aboutMe": "hi"}
 # ]
 
-@app.route("/friends")
-def getFriends():
-  conn = get_db_connection()
-  cursor = conn.cursor()
 
-  cursor.execute("SELECT * from profiles")
-  profiles = cursor.fetchall()
-
-  conn.close()
-  return jsonify([dict(profile) for profile in profiles])
-
+# / - nothing
+# /profile - get and post for editing users profile only COMPLETE
+# /my-stitches - get all profiles from the db, user is the center node
+# /friend - add number or something to the url, use the auto incremented id? Or name? Grab the 1 friend profile and allow edits (get and post)
+# /new-friend - post input from frontend into db as new profile
+# /birthdays - get birthdays and names for each profile (user included) should be able to link to their indiv friend page 
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -81,6 +77,51 @@ def userProfile():
         conn.close()
 
         return jsonify({"message": "Profile updated successfully", "updatedProfile": data})
+
+@app.route("/my-stitches")
+def getStitches():
+  conn = get_db_connection()
+  cursor = conn.cursor()
+
+  # fetch all profile data (user and friends)
+  cursor.execute("SELECT * from profiles")
+  profiles = cursor.fetchall()
+
+  conn.close()
+  return jsonify([dict(profile) for profile in profiles])
+
+@app.route("/friend/<int:friend_id>")
+def getFriend(friend_id):
+  conn = get_db_connection()
+  cursor = conn.cursor()
+
+  # fetch friend data
+  friend = cursor.execute("SELECT * FROM profiles WHERE id = ?", (friend_id,)).fetchone()
+
+  conn.close()
+  if friend:
+        return jsonify(friend)  # Send friend data as JSON response
+  return jsonify({'error': 'Friend not found'}), 404
+
+
+@app.route("/new-friend")
+def addFriend():
+  conn = get_db_connection()
+  cursor = conn.cursor()
+
+  data = request.json
+  print("Received update request:", data)  # Check to make sure it works
+
+  # send query to DB
+  cursor.execute("INSERT INTO profiles (name, birthday, relationship, so, notes, gifts) VALUES (?, ?, ?, ?, ?, ?)", 
+                 (data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"]))
+  
+  conn.commit()
+  conn.close()
+
+
+
+
 
 
 @app.errorhandler(500)
