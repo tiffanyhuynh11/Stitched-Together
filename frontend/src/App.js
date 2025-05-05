@@ -4,7 +4,8 @@ import UserProfilePage from './Pages/UserProfile';
 import FriendProfilePage from './Pages/FriendProfile';
 import HomePage from './Pages/HomePage';
 import Navbar from './Components/Navbar';
-import FriendsPage from './Pages/FriendsPage'
+import FriendsPage from './Pages/FriendsPage';
+import NewFriendPage from './Pages/NewFriend';
 
 function App() {
   const [myProfile, setMyProfile] = useState({})  // for the user profile
@@ -41,8 +42,9 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<UserProfilePage profile={myProfile}/>} />
-            <Route path="/friends" element={<FriendProfilePage profiles={profiles} />} />
+            <Route path="/friend" element={<FriendProfilePage profiles={profiles} />} />
             <Route path="/friends" element={<FriendsPage />} />
+            <Route path="/new-friend" element={<NewFriendPage />} />
           </Routes>
         </div>
       </div>
