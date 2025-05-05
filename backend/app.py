@@ -39,19 +39,48 @@ def getFriends():
 
 
 
-@app.route("/profile")
-def getUserProfile():
+@app.route("/profile", methods=['GET', 'POST'])
+def userProfile():
   conn = get_db_connection()
   cursor = conn.cursor()
 
-  cursor.execute("SELECT * from profiles ORDER BY id ASC LIMIT 1")
-  profile = cursor.fetchone()
+  # fetch User's Profile
+  if request.method == 'GET':
+        cursor.execute("SELECT * FROM profiles ORDER BY id ASC LIMIT 1")
+        profile = cursor.fetchone()
+        conn.close()
 
-  conn.close()
-  if profile:
-        return jsonify(dict(profile))
-  return jsonify({"error": "Profile not found"}), 404
+        if profile:
+            return jsonify(dict(profile))
+        return jsonify({"error": "Profile not found"}), 404
 
+  # update User's profile
+  elif request.method == 'POST':
+        data = request.json
+        print("Received update request:", data)  # Check to make sure it works
+
+        cursor.execute("SELECT * FROM profiles ORDER BY id ASC LIMIT 1")
+        currentProfile = cursor.fetchone()
+
+        # Ensure we do not lose data during update
+        name = data.get("name", currentProfile["name"])
+        birthday = data.get("birthday", currentProfile["birthday"])
+        relationship = data.get("relationship", currentProfile["relationship"])
+        so = data.get("so", currentProfile["so"])
+        notes = data.get("notes", currentProfile["notes"])
+        gifts = data.get("gifts", currentProfile["gifts"])
+
+        # send query to DB
+        cursor.execute("""
+            UPDATE profiles 
+            SET name = ?, birthday = ?, relationship = ?, so = ?, notes = ?, gifts = ? 
+            WHERE id = (SELECT id FROM profiles ORDER BY id ASC LIMIT 1)
+        """, (name, birthday, relationship, so, notes, gifts))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Profile updated successfully", "updatedProfile": data})
 
 
 @app.errorhandler(500)

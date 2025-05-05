@@ -18,7 +18,7 @@ function UserProfile({ profile }) {
     return (
         <div>
           <h1>My Profile</h1>
-          <Profile key={profile.id || profile.name} data={profile} />
+        <Profile key={profile.id || profile.name} data={profile} editable={true} />
         </div>
     );
 };

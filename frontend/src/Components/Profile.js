@@ -10,7 +10,21 @@ const Profile = ({ data, editable = false, onSave }) => {
   };
 
   const handleSave = () => {
+    if (!profile.name) {  // ensure there is a name
+      alert("Name and birthday cannot be empty!");
+      return;
+    }
+
     setIsEditing(false);
+
+    fetch("/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(profile),
+    })
+      .then(response => response.json())
+      .then(updatedProfile => setProfile(updatedProfile)) // Update state
+      .catch(error => console.error("Error updating profile:", error));
     onSave && onSave(profile);
   };
 
