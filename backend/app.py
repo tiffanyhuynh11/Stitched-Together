@@ -39,7 +39,7 @@ def getFriends():
 
 
 
-@app.route("/me")
+@app.route("/profile")
 def getUserProfile():
   conn = get_db_connection()
   cursor = conn.cursor()

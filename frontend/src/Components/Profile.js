@@ -40,10 +40,10 @@ const Profile = ({ data, editable = false, onSave }) => {
               className="w-full p-2 mt-1 border border-gray-300 rounded-md"
             />
 
-            <label className="block font-semibold mt-4">About Me:</label>
+            <label className="block font-semibold mt-4">Notes:</label>
             <textarea
-              name="aboutMe"
-              value={profile.aboutMe}
+              name="notes"
+              value={profile.notes}
               onChange={handleChange}
               className="w-full p-2 mt-1 border border-gray-300 rounded-md"
             />
@@ -64,7 +64,7 @@ const Profile = ({ data, editable = false, onSave }) => {
               <strong>Birthday:</strong> {profile.birthday}
             </p>
             <p className="mb-4">
-              <strong>About Me:</strong> {profile.aboutMe}
+              <strong>Notes:</strong> {profile.notes}
             </p>
 
             {editable && (
