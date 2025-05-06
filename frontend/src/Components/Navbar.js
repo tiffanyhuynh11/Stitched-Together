@@ -19,6 +19,12 @@ const Navbar = () => {
           Friends
         </Link>
         <Link
+          to="/calendar"
+          className="text-white font-medium hover:text-red-400 transition"
+        >
+          Birthdays
+        </Link>
+        <Link
           to="/profile"
           className="text-white font-medium hover:text-red-400 transition"
         >

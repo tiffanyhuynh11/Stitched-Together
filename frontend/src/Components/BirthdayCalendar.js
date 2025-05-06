@@ -35,7 +35,6 @@ const BirthdayCalendar = ({ profiles }) => {
                     tileContent={tileContent}
                     calendarType="gregory"
                     view={view}
-                    maxDetail="year"
                     onClickMonth={() => setView("month")}
                     onClickYear={() => setView("month")}
                     onActiveStartDateChange={({ view: newView }) => {
