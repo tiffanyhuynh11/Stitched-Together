@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 //TODO: limit date to before today's date
 const Profile = ({ data, editable = true, onSave, self = false, add = false }) => {
