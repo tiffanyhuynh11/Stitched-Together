@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "npm@latest",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

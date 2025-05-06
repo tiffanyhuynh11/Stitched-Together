@@ -1,6 +1,6 @@
 {
   "name": "Stitched-Together",
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "npm@latest",
   "dependencies": {
     "flask": "^0.2.10"
   }
