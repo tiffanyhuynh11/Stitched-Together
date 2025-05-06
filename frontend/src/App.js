@@ -56,10 +56,3 @@ function App() {
 
 export default App;
 
-
-//        # / - nothing
-//# / profile - get and post for editing users profile only COMPLETE
-//# / my - stitches - get all profiles from the db, user is the center node
-//# / friend - add number or something to the url, use the auto incremented id ? Or name ? Grab the 1 friend profile and allow edits(get and post)
-//# / new- friend - post input from frontend into db as new profile
-//# / birthdays - get birthdays and names for each profile(user included) should be able to link to their indiv friend page
