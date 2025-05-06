@@ -9,7 +9,7 @@ function FriendProfile() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/friend/${friendId}", {
+    fetch(`/friend/${friendId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -17,6 +17,7 @@ function FriendProfile() {
     })
       .then(response => response.json())
       .then(data => {
+        console.log("Fetched profile data:", data);
         if (data.error) {
           setError(data.error);
         } else {
@@ -32,7 +33,9 @@ function FriendProfile() {
 
   return (
     <div>
-      <Profile key={profile.id} data={profile} editable={true} />
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+      {profile ? <Profile key={profile.id} data={profile} editable={true} friendId={friendId} /> : <p>No profile data found</p>}
     </div>
   );
 };

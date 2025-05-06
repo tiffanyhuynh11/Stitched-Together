@@ -22,10 +22,10 @@ app = Flask(__name__)
 
 # / - nothing
 # /profile - get and post for editing users profile only COMPLETE
-# /my-stitches - get all friend profiles from the db, exclude the user's
+# /my-stitches - get all friend profiles from the db, exclude the user's COMPLETE
 # /friend - add number or something to the url, use the auto incremented id? Or name? Grab the 1 friend profile and allow edits (get and post)
 # /new-friend - post input from frontend into db as new profile COMPLETE
-# /birthdays - get birthdays and names for each profile (user included) should be able to link to their indiv friend page 
+# /calendar - get birthdays and names for each profile (user included) should be able to link to their indiv friend page 
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -62,7 +62,7 @@ def userProfile():
         cursor.execute("""
             UPDATE profiles 
             SET name = ?, birthday = ?, relationship = ?, so = ?, notes = ?, gifts = ? 
-            WHERE id = (SELECT id FROM profiles ORDER BY id ASC LIMIT 1)
+            WHERE id = 1
         """, (name, birthday, relationship, so, notes, gifts))
 
         conn.commit()
@@ -82,18 +82,50 @@ def getStitches():
   conn.close()
   return jsonify([dict(profile) for profile in profiles])
 
-@app.route("/friend/<int:friend_id>")
+@app.route("/friend/<int:friend_id>", methods=['GET', 'POST', 'DELETE'])
 def getFriend(friend_id):
   conn = get_db_connection()
   cursor = conn.cursor()
-
   # fetch friend data
   friend = cursor.execute("SELECT * FROM profiles WHERE id = ?", (friend_id,)).fetchone()
+  if not friend:
+    return jsonify({'error': 'Friend not found'}), 404
 
-  conn.close()
-  if friend:
-        return jsonify(friend)  # Send friend data as JSON response
-  return jsonify({'error': 'Friend not found'}), 404
+  if request.method == 'GET':
+    conn.close()
+    return jsonify(dict(friend))  # Send friend data
+    
+
+  elif request.method == 'POST':
+    data = request.json
+
+    # ensure no loss of data
+    name = data.get("name", friend["name"])
+    birthday = data.get("birthday", friend["birthday"])
+    relationship = data.get("relationship", friend["relationship"])
+    so = data.get("so", friend["so"])
+    notes = data.get("notes", friend["notes"])
+    gifts = data.get("gifts", friend["gifts"])
+
+    cursor.execute("""
+            UPDATE profiles 
+            SET name = ?, birthday = ?, relationship = ?, so = ?, notes = ?, gifts = ? 
+            WHERE id = ?
+        """, (name, birthday, relationship, so, notes, gifts, friend_id))   # update the db
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Friend updated successfully", "updatedFriend": data})
+
+  elif request.method == 'DELETE':
+    cursor.execute("DELETE FROM profiles WHERE id=?", (friend_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": f"Friend {friend_id} deleted successfully"})
+
+  
+  
 
 
 @app.route("/new-friend", methods=["POST"])
@@ -105,6 +137,7 @@ def newFriend():
 
   add_profile(data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"])
   return jsonify({"message": "Friend Added", "friendProfile": data})
+
 
 
 @app.errorhandler(500)

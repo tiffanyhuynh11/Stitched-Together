@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //TODO: limit date to before today's date
-const Profile = ({ data, editable = true, onSave, self = false, add = false }) => {
+const Profile = ({ data, editable = true, friendId, onSave, self = false, add = false }) => {
     const [profile, setProfile] = useState(data);
     const [isEditing, setIsEditing] = useState(add);
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Profile = ({ data, editable = true, onSave, self = false, add = false }) =
 
         setIsEditing(false);
         
-        const url = add ? "/new-friend" : "/profile"; // diff route for adding a new friend
+        const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile"; // determine route
 
         fetch(url, {
           method: "POST", // does this need to change if adding a friend?

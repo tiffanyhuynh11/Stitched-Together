@@ -5,7 +5,7 @@ const CalendarPage = () => {
   const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
-    fetch('//my-stitches')
+    fetch("/my-stitches")
       .then((res) => res.json())
       .then((data) => setProfiles(data))
       .catch((err) => console.error("Failed to fetch profiles", err));
