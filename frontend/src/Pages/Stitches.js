@@ -2,13 +2,13 @@ import React from "react";
 import FriendsGraph from "../Components/FriendsGraph"
 import { useNavigate } from 'react-router-dom';
 
-function Stitches() {
+function Stitches({user, profiles}) {
     const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-blue-50 relative">
             <h1 className="text-center text-2xl font-bold py-4 text-peach-500">Your Friends</h1>
-            <FriendsGraph />
+            <FriendsGraph user={user} friends={profiles}/>
 
             <button
                 onClick={() => navigate('/new-friend')}
