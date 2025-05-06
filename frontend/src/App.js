@@ -46,7 +46,7 @@ function App() {
             <Route path="/friend/:friendId" element={<FriendProfilePage />} />
             <Route path="/my-stitches" element={<Stitches user={myProfile} profiles={profiles}/>} />
             <Route path="/new-friend" element={<NewFriendPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/calendar" element={<CalendarPage user={myProfile} profiles={profiles}/>} />
           </Routes>
         </div>
       </div>

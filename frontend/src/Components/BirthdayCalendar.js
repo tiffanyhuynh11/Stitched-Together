@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import './Calendar.css';
 
-const BirthdayCalendar = ({ profiles }) => {
+const BirthdayCalendar = ({ user, profiles }) => {
     const [value, setValue] = useState(new Date());
     const [view, setView] = useState("month");
 
     const getBirthdaysForDate = (date) => {
-        const dateStr = date.toISOString().split('T')[0];
-        return profiles.filter((p) => p.birthday === dateStr);
+        const monthDay = date.toISOString().slice(5, 10);
+        if (!user) return [];
+        return [user, ...(profiles || [])].filter((p) =>
+            p.birthday && p.birthday.slice(5, 10) === monthDay
+        );
+
     };
 
     const tileContent = ({ date, view }) => {
@@ -39,11 +43,11 @@ const BirthdayCalendar = ({ profiles }) => {
                     onClickYear={() => setView("month")}
                     onActiveStartDateChange={({ view: newView }) => {
                         if (newView === "decade") {
-                          setView("year");
+                            setView("year");
                         } else {
-                          setView(newView);
+                            setView(newView);
                         }
-                      }}
+                    }}
                 />
             </div>
         </div>

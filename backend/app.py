@@ -66,9 +66,11 @@ def userProfile():
         """, (name, birthday, relationship, so, notes, gifts))
 
         conn.commit()
+        cursor.execute("SELECT * FROM profiles WHERE id = 1")
+        updated = cursor.fetchone()
         conn.close()
 
-        return jsonify({"message": "Profile updated successfully", "updatedProfile": data})
+        return jsonify(dict(updated)), 200
 
 @app.route("/my-stitches")
 def getStitches():

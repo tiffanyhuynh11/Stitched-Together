@@ -33,7 +33,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
           console.log("Server response:", updatedProfile)
           setProfile(updatedProfile); // Update state
           if (add) {
-            setTimeout(() => navigate('/my-stitches'), 500); // Redirect after adding new friend
+            navigate('/my-stitches'); // Redirect after adding new friend
           }
 
         }) 
