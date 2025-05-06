@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //TODO: limit date to before today's date
-const Profile = ({ data, editable = true, friendId, onSave, self = false, add = false }) => {
+const Profile = ({ data, editable = true, friendId, onSave, self = false, add = false, deletable }) => {
     const [profile, setProfile] = useState(data);
     const [isEditing, setIsEditing] = useState(add);
     const navigate = useNavigate();
@@ -39,7 +39,29 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
         }) 
             .catch(error => console.error("Error updating profile:", error));
         onSave && onSave(profile);
-    };
+  };
+
+  const handleDelete = async (userId) => {
+    const confirmDelete = window.confirm("Sure you want to remove your friend?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`/friend/${friendId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Profile deleted successfully.");
+        navigate('/my-stitches'); // Redirect after removal
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting profile:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-yellow-100 px-4">
@@ -141,6 +163,15 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
                                 Edit
                             </button>
                         )}
+                {deletable && (
+                  <button
+                    onClick={() => handleDelete(friendId)}
+                    className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 transition"
+                  >
+                    Delete Profile
+                  </button>
+                )}
+
                     </>
                 )}
             </div>

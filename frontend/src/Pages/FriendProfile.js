@@ -35,7 +35,7 @@ function FriendProfile() {
     <div>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-      {profile ? <Profile key={profile.id} data={profile} editable={true} friendId={friendId} /> : <p>No profile data found</p>}
+      {profile ? <Profile key={profile.id} data={profile} editable={true} friendId={friendId} deletable={true} /> : <p>No profile data found</p>}
     </div>
   );
 };
