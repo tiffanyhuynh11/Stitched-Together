@@ -9,8 +9,8 @@ import NewFriendPage from './Pages/NewFriend';
 import CalendarPage from './Pages/CalendarPage';
 
 function App() {
-  const [myProfile, setMyProfile] = useState({})  // for the user profile
-  const [profiles, setProfiles] = useState([{}])    // for the friend profiles
+  const [myProfile, setMyProfile] = useState(null)  // for the user profile
+  const [profiles, setProfiles] = useState([])    // for the friend profiles
 
   useEffect(() => {
     fetch("/profile").then(

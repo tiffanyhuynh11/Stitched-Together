@@ -2,20 +2,27 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import './Calendar.css';
 
-const BirthdayCalendar = ({ user, profiles }) => {
+const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
     const [value, setValue] = useState(new Date());
     const [view, setView] = useState("month");
 
     const getBirthdaysForDate = (date) => {
+        console.log("User birthday:", user?.birthday);
+        console.log("Friend birthdays:", (profiles || []).map(p => p.birthday));
+
         const monthDay = date.toISOString().slice(5, 10);
         if (!user) return [];
-        return [user, ...(profiles || [])].filter((p) =>
-            p.birthday && p.birthday.slice(5, 10) === monthDay
-        );
 
+        return [user, ...(profiles || [])].filter((p) => {
+            if (!p.birthday) return false;
+            const bdayMonthDay = new Date(p.birthday).toISOString().slice(5, 10);
+            return bdayMonthDay === monthDay;
+        });
     };
 
+
     const tileContent = ({ date, view }) => {
+        const bdays = getBirthdaysForDate(date);
         if (view === 'month') {
             const bdays = getBirthdaysForDate(date);
             return bdays.length > 0 ? (
