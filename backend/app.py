@@ -20,12 +20,7 @@ def add_profile(name, birthday, relationship, so, notes, gifts):
 
 app = Flask(__name__)
 
-# / - nothing
-# /profile - get and post for editing users profile only COMPLETE
-# /my-stitches - get all friend profiles from the db, exclude the user's COMPLETE
-# /friend - add number or something to the url, use the auto incremented id? Or name? Grab the 1 friend profile and allow edits (get and post)
-# /new-friend - post input from frontend into db as new profile COMPLETE
-# /calendar - get birthdays and names for each profile (user included) should be able to link to their indiv friend page 
+# TODO: edit the setup scripts to run npm install for the frontend and run init_db.py
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -77,7 +72,7 @@ def getStitches():
   conn = get_db_connection()
   cursor = conn.cursor()
 
-  # fetch profile data
+  # fetch all friend data
   cursor.execute("SELECT * from profiles WHERE id != 1") # exclude the user's data
   profiles = cursor.fetchall()
 
@@ -85,7 +80,7 @@ def getStitches():
   return jsonify([dict(profile) for profile in profiles])
 
 @app.route("/friend/<int:friend_id>", methods=['GET', 'POST', 'DELETE'])
-def getFriend(friend_id):
+def handleFriend(friend_id):
   conn = get_db_connection()
   cursor = conn.cursor()
   # fetch friend data
@@ -126,10 +121,6 @@ def getFriend(friend_id):
     conn.close()
     return jsonify({"message": f"Friend {friend_id} deleted successfully"})
 
-  
-  
-
-
 @app.route("/new-friend", methods=["POST"])
 def newFriend():
   data = request.get_json()
@@ -139,14 +130,6 @@ def newFriend():
 
   add_profile(data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"])
   return jsonify({"message": "Friend Added", "friendProfile": data})
-
-
-
-@app.errorhandler(500)
-def handle_500_error(error):
-    return jsonify({"error": "Internal Server Error"}), 500
-
-
 
 if __name__ == "__main__":
   app.run(debug=True)
