@@ -34,6 +34,17 @@ const FriendsGraph = ({ user, friends }) => {
   return (
     <Stage width={width} height={height}>
       <Layer>
+
+        {/*Draw lines from user to each friend*/}
+        {nodes.map((friend, i) => (
+          <Line
+            key={`line-${i}`}
+            points={[centerX, centerY, friend.x, friend.y]}
+            stroke="#f6b092"
+            strokeWidth={2}
+          />
+        ))}
+
         {/*User's bubble*/}
         <Circle
           x={centerX}
@@ -45,20 +56,10 @@ const FriendsGraph = ({ user, friends }) => {
         <Text
           x={centerX - 30}
           y={centerY - 10}
-          text={"My Name"}
+          text={user.name}
           fontSize={14}
           fill="white"
         />
-
-        {/*Draw lines from user to each friend*/}
-        {nodes.map((friend, i) => (
-          <Line
-            key={`line-${i}`}
-            points={[centerX, centerY, friend.x, friend.y]}
-            stroke="#f6b092"
-            strokeWidth={2}
-          />
-        ))}
 
         {/*Friend bubbles*/}
         {nodes.map((friend, i) => (

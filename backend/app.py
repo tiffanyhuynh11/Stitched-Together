@@ -22,9 +22,9 @@ app = Flask(__name__)
 
 # / - nothing
 # /profile - get and post for editing users profile only COMPLETE
-# /my-stitches - get all profiles from the db, user is the center node
+# /my-stitches - get all friend profiles from the db, exclude the user's
 # /friend - add number or something to the url, use the auto incremented id? Or name? Grab the 1 friend profile and allow edits (get and post)
-# /new-friend - post input from frontend into db as new profile
+# /new-friend - post input from frontend into db as new profile COMPLETE
 # /birthdays - get birthdays and names for each profile (user included) should be able to link to their indiv friend page 
 
 
@@ -75,8 +75,8 @@ def getStitches():
   conn = get_db_connection()
   cursor = conn.cursor()
 
-  # fetch all profile data (user and friends)
-  cursor.execute("SELECT * from profiles")
+  # fetch profile data
+  cursor.execute("SELECT * from profiles WHERE id != 1") # exclude the user's data
   profiles = cursor.fetchall()
 
   conn.close()
