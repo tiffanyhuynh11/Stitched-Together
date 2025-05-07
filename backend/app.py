@@ -143,5 +143,10 @@ def newFriend():
   add_profile(data["name"], data["birthday"], data["relationship"], data["connection"], data["so"], data["notes"], data["gifts"])
   return jsonify({"message": "Friend Added", "friendProfile": data})
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # Respond with "No Content"
+
+
 if __name__ == "__main__":
   app.run(debug=True)
