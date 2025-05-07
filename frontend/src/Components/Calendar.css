@@ -34,7 +34,7 @@
     font-size: 3rem;
     font-weight: bold;
     color: #f6a192;
-  }
+}
 
 .react-calendar__month-view__weekdays {
     display: grid;
@@ -113,4 +113,52 @@
 .react-calendar__tile--hover {
     background: #f6d992 !important;
     color: black;
+}
+
+.react-calendar__tile .birthday-tooltip {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #fcb6b6;
+    padding: 5px;
+    font-size: 0.75rem;
+    z-index: 10;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.react-calendar__tile:hover .birthday-tooltip {
+    display: block;
+}
+
+.birthday-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.birthday-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.birthday-wrapper:hover .birthday-list {
+    display: flex;
+}
+
+.birthday-link {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: #ffe4e6;
+    color: #be123c;
+    text-align: center;
+    text-decoration: none;
+}
+
+.birthday-link:hover {
+    background-color: #fecdd3;
 }

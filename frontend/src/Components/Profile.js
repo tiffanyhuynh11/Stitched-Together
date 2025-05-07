@@ -22,7 +22,8 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
         setIsEditing(false);
     
         const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile";
-        const { relationship, ...profileToSend } = profile;
+        const profileToSend = add ? profile : (({ relationship, ...rest }) => rest)(profile);
+
     
         fetch(url, {
             method: "POST",
@@ -87,6 +88,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
                         <input
                             type="date"
                             name="birthday"
+                            max={new Date().toISOString().split("T")[0]}
                             value={profile.birthday}
                             onChange={handleChange}
                             className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"

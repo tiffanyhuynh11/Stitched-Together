@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
+import { Link } from 'react-router-dom';
 import './Calendar.css';
 
 const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
@@ -7,9 +8,6 @@ const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
     const [view, setView] = useState("month");
 
     const getBirthdaysForDate = (date) => {
-        console.log("User birthday:", user?.birthday);
-        console.log("Friend birthdays:", (profiles || []).map(p => p.birthday));
-
         const monthDay = date.toISOString().slice(5, 10);
         if (!user) return [];
 
@@ -20,18 +18,24 @@ const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
         });
     };
 
-
     const tileContent = ({ date, view }) => {
+        if (view !== 'month') return null;
+      
         const bdays = getBirthdaysForDate(date);
-        if (view === 'month') {
-            const bdays = getBirthdaysForDate(date);
-            return bdays.length > 0 ? (
-                <div className="text-xs text-pink-500 mt-1">
-                    🎉 {bdays.map((p) => p.name).join(', ')}
-                </div>
-            ) : null;
-        }
-    };
+        if (bdays.length === 0) return null;
+      
+        return (
+          <div className="birthday-wrapper">
+            <div className="birthday-list">
+              {bdays.map((p) => (
+                <Link to={`/friend/${p.id}`} key={p.id} className="birthday-link">
+                  🎉 {p.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      };      
 
     return (
         <div className="w-full max-w-screen-md mx-auto py-8 px-4 text-center">
