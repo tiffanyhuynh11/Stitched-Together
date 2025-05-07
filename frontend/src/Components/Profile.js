@@ -96,7 +96,7 @@ const Profile = ({ data, editable = true, friendId, self = false, add = false, d
                             <>
                                 <label className="block font-medium mt-4 text-peach-500">Relationship</label>
                                 <input
-                                    name="relationship"
+                                    name="connection"
                                     value={profile.connection}
                                     onChange={handleChange}
                                     className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"
