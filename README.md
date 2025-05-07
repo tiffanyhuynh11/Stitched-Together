@@ -15,10 +15,10 @@ cd ..
 cd frontend
 npm install
 ```
-Once setup is complete, open 2 terminal windows or tabs and activate the virtual environment in each, using .\venv\Scripts\activate.bat
+Once setup is complete, open 2 terminal windows or tabs and activate the virtual environment in each, using `.\venv\Scripts\activate.bat`
 
-In the first terminal, navigate to the backend subdirectory and run python app.py
+In the first terminal, navigate to the backend subdirectory and run `python app.py`
 
-In the second terminal, navigate to the frontend subdirectory and run npm start
+In the second terminal, navigate to the frontend subdirectory and run `npm start`
 
 Stitched Together will then open in your browser, ready to use!
