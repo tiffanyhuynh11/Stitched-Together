@@ -15,7 +15,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
   const handleSave = (e) => {
         e.preventDefault(); // Prevent unintended GET requests
         if (!profile.name) {
-            alert("Name and birthday cannot be empty!");
+            alert("Name cannot be empty!");
             return;
         }
 
@@ -24,7 +24,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
         const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile"; // determine route
 
         fetch(url, {
-          method: "POST", // does this need to change if adding a friend?
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(profile),
         })
@@ -166,7 +166,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
                 {deletable && (
                   <button
                     onClick={() => handleDelete(friendId)}
-                    className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 transition"
+                    className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 mt-2 transition"
                   >
                     Delete Profile
                   </button>
