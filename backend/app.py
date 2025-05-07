@@ -105,10 +105,20 @@ def handleFriend(friend_id):
     gifts = data.get("gifts", friend["gifts"])
 
     cursor.execute("""
-            UPDATE profiles 
-            SET name = ?, birthday = ?, relationship = ?, so = ?, notes = ?, gifts = ? 
-            WHERE id = ?
-        """, (name, birthday, relationship, so, notes, gifts, friend_id))   # update the db
+    UPDATE profiles
+    SET 
+        name = ?, 
+        birthday = ?, 
+        relationship = CASE 
+            WHEN relationship IS NULL THEN ? 
+            ELSE relationship || ', ' || ? 
+        END, 
+        so = ?, 
+        notes = ?, 
+        gifts = ? 
+    WHERE id = ?
+    """, (name, birthday, relationship, relationship, so, notes, gifts, friend_id)) # update the db
+    # makes relationships into csv
 
     conn.commit()
     conn.close()
