@@ -17,6 +17,20 @@ const Profile = ({ data, editable = true, friendId, self = false, add = false, d
             alert("Name cannot be empty!");
             return;
         }
+        
+        if (profile.birthday) {
+            const selected = new Date(profile.birthday);
+            selected.setHours(0, 0, 0, 0);
+    
+            const yesterday = new Date();
+            yesterday.setHours(0, 0, 0, 0);
+            yesterday.setDate(yesterday.getDate() - 1);
+    
+            if (selected > yesterday) {
+                alert("Birthday must be before today!");
+                return;
+            }
+        }
     
         setIsEditing(false);
     
