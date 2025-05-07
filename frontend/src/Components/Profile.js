@@ -1,84 +1,89 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// This is a reusable component that displays everyone's profile and allows for editing
 const Profile = ({ data, editable = true, friendId, self = false, add = false, deletable }) => {
     const [profile, setProfile] = useState(data);
     const [isEditing, setIsEditing] = useState(add);
     const navigate = useNavigate();
 
+    // This is how the textbox reflects what is being typed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Updates the Database and returns to non-edit mode, or goes back the friends page if adding a new friend
     const handleSave = (e) => {
         e.preventDefault(); // Prevent unintended GET requests
         if (!profile.name) {
             alert("Name cannot be empty!");
             return;
         }
-        
+
+        // prevents birthdays in the future from being added
         if (profile.birthday) {
             const selected = new Date(profile.birthday);
             selected.setHours(0, 0, 0, 0);
-    
+
             const yesterday = new Date();
             yesterday.setHours(0, 0, 0, 0);
             yesterday.setDate(yesterday.getDate() - 1);
-    
+
             if (selected > yesterday) {
                 alert("Birthday must be before today!");
                 return;
             }
         }
-    
+
         setIsEditing(false);
-    
+
         const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile";
         const profileToSend = add ? profile : (({ relationship, ...rest }) => rest)(profile);
 
-    
+
         fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(profileToSend),
         })
-        .then(response => response.json())
-        .then(updatedProfile => {
-            setProfile(prev => ({
-                ...prev,
-                ...updatedProfile,
-                relationship: prev.relationship
-            }));
-    
-            if (add) {
-                navigate('/my-stitches');
-            }
-        })
-        .catch(error => console.error("Error updating profile:", error));
+            .then(response => response.json())
+            .then(updatedProfile => {
+                setProfile(prev => ({
+                    ...prev,
+                    ...updatedProfile,
+                    relationship: prev.relationship
+                }));
+
+                if (add) {
+                    navigate('/my-stitches');
+                }
+            })
+            .catch(error => console.error("Error updating profile:", error));
     };
-    
-  const handleDelete = async (userId) => {
-    const confirmDelete = window.confirm("Sure you want to remove your friend?");
-    if (!confirmDelete) return;
 
-    try {
-      const response = await fetch(`/friend/${friendId}`, {
-        method: "DELETE",
-      });
+    //deleting a friend, cannot delete user
+    const handleDelete = async (userId) => {
+        const confirmDelete = window.confirm("Sure you want to remove your friend?");
+        if (!confirmDelete) return;
 
-      if (response.ok) {
-        alert("Profile deleted successfully.");
-        navigate('/my-stitches'); // Redirect after removal
-      } else {
-        const data = await response.json();
-        alert(`Error: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Error deleting profile:", error);
-      alert("Something went wrong. Please try again.");
-    }
-  };
+        try {
+            const response = await fetch(`/friend/${friendId}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                alert("Profile deleted successfully.");
+                navigate('/my-stitches'); // Redirect after removal
+            } else {
+                const data = await response.json();
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            console.error("Error deleting profile:", error);
+            alert("Something went wrong. Please try again.");
+        }
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-yellow-100 px-4">
@@ -87,6 +92,7 @@ const Profile = ({ data, editable = true, friendId, self = false, add = false, d
                     {self ? 'Your Profile' : `${data.name}'s Profile`}
                 </h2>
 
+                {/*Displays the edit box */}
                 {editable && isEditing ? (
                     <>
                         <label className="block font-medium mt-4 text-peach-500">Name</label>
@@ -151,6 +157,7 @@ const Profile = ({ data, editable = true, friendId, self = false, add = false, d
                     </>
                 ) : (
                     <>
+                        {/*Displays the profile regularly */}
                         <p className="mb-4 text-gray-700">
                             <strong className="text-peach-500">Name:</strong> {profile.name}
                         </p>
@@ -181,14 +188,14 @@ const Profile = ({ data, editable = true, friendId, self = false, add = false, d
                                 Edit
                             </button>
                         )}
-                {deletable && (
-                  <button
-                    onClick={() => handleDelete(friendId)}
-                    className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 mt-2 transition"
-                  >
-                    Delete Profile
-                  </button>
-                )}
+                        {deletable && (
+                            <button
+                                onClick={() => handleDelete(friendId)}
+                                className="w-full bg-peach-500 text-white py-2 font-semibold rounded-md hover:bg-red-400 mt-2 transition"
+                            >
+                                Delete Profile
+                            </button>
+                        )}
 
                     </>
                 )}

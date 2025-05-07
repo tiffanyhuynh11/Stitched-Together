@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// This is the navigation bar on top of the application
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-orange-300 shadow-md px-6 py-4 flex justify-between items-center">
