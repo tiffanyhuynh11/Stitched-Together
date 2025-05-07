@@ -48,9 +48,8 @@ const FriendsGraph = ({ user, friends }) => {
   const [pendingConnection, setPendingConnection] = useState(null);
   const [input, setInput] = useState('');
   const [hover, setHover] = useState(null);
-  const groupRefs = useRef([]);
-  const dragState = useRef(false);
 
+  // if the user added friends, randomizes the position of friend bubbles
   useEffect(() => {
     if (!Array.isArray(friends) || friends.length === 0 || nodes.length > 0 || !width || !height) return;
 
@@ -67,6 +66,48 @@ const FriendsGraph = ({ user, friends }) => {
     setNodes(initialized);
   }, [friends, width, height]);
 
+  const groupRefs = useRef([]);
+  const dragState = useRef(false);
+
+  useEffect(() => {
+    if (!Array.isArray(friends) || !user) return;
+
+    const seen = new Set();
+    const inferred = [];
+
+    for (const friend of friends) {
+      if (!friend.relationship) continue;
+
+      const key = [Math.min(friend.id, user.id), Math.max(friend.id, user.id)].join('-');
+      if (seen.has(key)) continue;
+
+      seen.add(key);
+      inferred.push({
+        fromId: friend.id,
+        toId: user.id,
+        relationship: friend.relationship
+      });
+    }
+
+    for (let i = 0; i < friends.length; i++) {
+      const f1 = friends[i];
+      for (let j = i + 1; j < friends.length; j++) {
+        const f2 = friends[j];
+        if (f1.relationship === '' || !f1.relationship || !f2.relationship) continue;
+        const key = [Math.min(f1.id, f2.id), Math.max(f1.id, f2.id)].join('-');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        inferred.push({
+          fromId: f1.id,
+          toId: f2.id,
+          relationship: f1.relationship
+        });
+      }
+    }
+
+    setConnections(inferred);
+  }, [friends, user]);
+
   // Prevent crashing due to undefined fields
   if (!user || !Array.isArray(friends) || !width || !height) return null;
 
@@ -74,30 +115,6 @@ const FriendsGraph = ({ user, friends }) => {
   const handleSubmit = () => {
     const { fromId, toId, originIndex } = pendingConnection;
     const trimmed = input.trim();
-
-    setConnections(prev => {
-      const existingIndex = prev.findIndex(c =>
-        (c.fromId === fromId && c.toId === toId) ||
-        (c.fromId === toId && c.toId === fromId)
-      );
-
-      if (trimmed === '') {
-        if (existingIndex >= 0) {
-          const updated = [...prev];
-          updated.splice(existingIndex, 1);
-          return updated;
-        }
-        return prev;
-      } else {
-        if (existingIndex >= 0) {
-          const updated = [...prev];
-          updated[existingIndex] = { fromId, toId, relationship: trimmed };
-          return updated;
-        } else {
-          return [...prev, { fromId, toId, relationship: trimmed }];
-        }
-      }
-    });
 
     const { x: newX, y: newY } = randomizePosition(nodes, centerX, centerY, width, height);
 
@@ -113,6 +130,24 @@ const FriendsGraph = ({ user, friends }) => {
 
     setPendingConnection(null);
     setInput('');
+
+    //update the DB
+    fetch(`/friend/${fromId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ relationship: trimmed }),
+    })
+      .then(() =>
+        fetch(`/friend/${toId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ relationship: trimmed }),
+        })
+      )
+      .then(() => {
+        console.log("Relationship save successful.")
+      })
+      .catch(err => console.error("Error updating profiles:", err));
   };
 
   return (
