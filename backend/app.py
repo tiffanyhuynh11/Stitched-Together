@@ -8,11 +8,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def add_profile(name, birthday, relationship, so, notes, gifts):
+def add_profile(name, birthday, relationship, connection, so, notes, gifts):
   conn = get_db_connection()
   cursor = conn.cursor()
-  cursor.execute("INSERT INTO profiles (name, birthday, relationship, so, notes, gifts) VALUES (?, ?, ?, ?, ?, ?)",
-                 (name, birthday, relationship, so, notes, gifts))
+  cursor.execute("INSERT INTO profiles (name, birthday, relationship, connection, so, notes, gifts) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                 (name, birthday, relationship, connection, so, notes, gifts))
 
   conn.commit()
   conn.close()
@@ -100,6 +100,7 @@ def handleFriend(friend_id):
     name = data.get("name", friend["name"])
     birthday = data.get("birthday", friend["birthday"])
     relationship = data.get("relationship", friend["relationship"])
+    connection = data.get("connection", friend["connection"])
     so = data.get("so", friend["so"])
     notes = data.get("notes", friend["notes"])
     gifts = data.get("gifts", friend["gifts"])
@@ -113,11 +114,12 @@ def handleFriend(friend_id):
             WHEN relationship IS NULL THEN ? 
             ELSE relationship || ', ' || ? 
         END, 
+        connection = ?
         so = ?, 
         notes = ?, 
         gifts = ? 
     WHERE id = ?
-    """, (name, birthday, relationship, relationship, so, notes, gifts, friend_id)) # update the db
+    """, (name, birthday, relationship, relationship, connection, so, notes, gifts, friend_id)) # update the db
     # makes relationships into csv
 
     conn.commit()
@@ -138,7 +140,7 @@ def newFriend():
   if not data or "name" not in data:
     return jsonify({"error": "Invalid request: Name is required"}), 400  # Handle missing data
 
-  add_profile(data["name"], data["birthday"], data["relationship"], data["so"], data["notes"], data["gifts"])
+  add_profile(data["name"], data["birthday"], data["relationship"], data["connection"], data["so"], data["notes"], data["gifts"])
   return jsonify({"message": "Friend Added", "friendProfile": data})
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ CREATE TABLE profiles (
     name TEXT NOT NULL,
     birthday TEXT,
     relationship TEXT,
+    connection TEXT,
     so TEXT,
     notes TEXT,
     gifts TEXT
