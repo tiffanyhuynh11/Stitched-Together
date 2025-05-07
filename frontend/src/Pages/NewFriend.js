@@ -6,6 +6,7 @@ function NewFriend() {
     name: 'New Friend',
     birthday: '',
     relationship: '',
+    connection: '',
     so: '',
     gifts: '',
     notes: '',
