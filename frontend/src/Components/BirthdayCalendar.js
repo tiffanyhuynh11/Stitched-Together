@@ -7,17 +7,19 @@ const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
     const [value, setValue] = useState(new Date());
     const [view, setView] = useState("month");
 
+    // getting the birthdays of each profile
     const getBirthdaysForDate = (date) => {
-        const monthDay = date.toISOString().slice(5, 10);
+        const monthDay = date.toISOString().slice(5, 10); //will ignore year
         if (!user) return [];
 
         return [user, ...(profiles || [])].filter((p) => {
             if (!p.birthday) return false;
-            const bdayMonthDay = new Date(p.birthday).toISOString().slice(5, 10);
+            const bdayMonthDay = new Date(p.birthday).toISOString().slice(5, 10); // will ignore the year
             return bdayMonthDay === monthDay;
         });
     };
 
+    // the individual days in the calendar
     const tileContent = ({ date, view }) => {
         if (view !== 'month') return null;
       
@@ -44,6 +46,7 @@ const BirthdayCalendar = ({ user = {}, profiles = [] }) => {
             </h1>
 
             <div className="flex justify-center">
+                {/* from react-calendar*/}
                 <Calendar
                     onChange={setValue}
                     value={value}

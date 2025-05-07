@@ -1,3 +1,4 @@
+/* syling for the calendar page, since react-calendar does not work with tailwind */
 .react-calendar {
     width: 100%;
     max-width: 100%;
