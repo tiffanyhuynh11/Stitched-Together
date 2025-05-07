@@ -1,9 +1,37 @@
-import React from "react";
+
 import FriendsGraph from "../Components/FriendsGraph"
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
 
-function Stitches({user, profiles}) {
+function Stitches() {
     const navigate = useNavigate();
+
+    const [user, setUser] = useState(null)  // for the user profile
+    const [profiles, setProfiles] = useState([])    // for the friend profiles
+  
+    // fetch User data from the backend
+    useEffect(() => {
+      fetch("/profile").then(
+        response => response.json()
+      ).then(data => {
+          setUser(data);
+          console.log(data);
+        })
+        .catch(error => console.error("Error fetching profile:", error));
+    }, []);
+  
+  
+    // fetch Friend data from the backend
+    useEffect(() => {
+      fetch("/my-stitches").then(
+        response => response.json()
+      ).then(
+        data => {
+          setProfiles(data)
+          console.log(data)
+        }
+      ).catch(error => console.error("Error fetching profiles:", error));
+    }, [])
 
     return (
         <div className="min-h-screen bg-blue-50 relative">
