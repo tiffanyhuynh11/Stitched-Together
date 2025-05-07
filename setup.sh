@@ -11,23 +11,21 @@ if [ $? -ne 0 ]; then
     echo "Backend installation failed."
     exit 1
 fi
+cd ..
 
 echo "Installing frontend dependencies..."
-cd ../frontend || exit
+cd frontend || exit
 npm install
 if [ $? -ne 0 ]; then
     echo "Frontend installation failed."
     exit 1
 fi
+cd ..
 
 echo "Running database initialization..."
-cd ../backend || exit
-python3 ../init_db.py
+cd backend || exit
+python3 init_db.py
+cd ..
 
-echo "Starting backend server..."
-osascript -e 'tell application "Terminal" to do script "cd \"$(pwd)/backend\" && source \"$(pwd)/venv/bin/activate\" && python3 app.py"'
+echo "Setup complete! Run front and back ends via terminal!"
 
-echo "Starting frontend server..."
-osascript -e 'tell application "Terminal" to do script "cd \"$(pwd)/frontend\" && npm start"'
-
-echo "Setup complete!"
