@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+//This makes the page dynamic, moving components as the window gets smaller/larger
 const useWindowSize = () => {
   const [size, setSize] = useState({
     width: window.innerWidth,

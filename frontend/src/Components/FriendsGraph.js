@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const USER_RADIUS = 40;
 const FRIEND_RADIUS = 30;
 
+// randomizes the position of each friend node
 const randomizePosition = (existingNodes, centerX, centerY, width, height) => {
   const minDistance = USER_RADIUS + FRIEND_RADIUS + 40;
   const maxAttempts = 1000;
@@ -47,7 +48,7 @@ const FriendsGraph = ({ user, friends }) => {
   const [nodes, setNodes] = useState([]);
   const [connections, setConnections] = useState([]);
 
-  // randomizes the position of friend bubbles
+  // renders the connections
   useEffect(() => {
     if (!Array.isArray(friends) || friends.length === 0 || nodes.length > 0 || !width || !height) return;
 
@@ -216,12 +217,16 @@ const FriendsGraph = ({ user, friends }) => {
                   }
                   return { x: boundedX, y: boundedY };
                 }}
+
+                // saves the position of the node before it was dragged
                 onDragStart={(e) => {
                   dragState.current = true;
                   const { x, y } = e.target.position();
                   const friendId = nodes[i].id;
                   setOriginalPos(prev => ({ ...prev, [friendId]: { x, y } }));
-                }}                
+                }}    
+
+                // makes sure the lines move with the node          
                 onDragMove={(e) => {
                   const { x, y } = e.target.position();
                   setNodes((prev) => {
@@ -234,8 +239,6 @@ const FriendsGraph = ({ user, friends }) => {
                     return updated;
                   });
                 }}
-
-                // Randomizes the dragged bubble's position
                 onDragEnd={(e) => {
                   dragState.current = false;
                   const { x, y } = e.target.position();
@@ -263,6 +266,7 @@ const FriendsGraph = ({ user, friends }) => {
                     });
                   }
                 }}
+                // navigates to the clicked friend's profile
                 onClick={() => {
                   if (!dragState.current) {
                     navigate(`/friend/${friend.id}`);
