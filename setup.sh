@@ -25,9 +25,9 @@ cd ../backend || exit
 python3 ../init_db.py
 
 echo "Starting backend server..."
-osascript -e 'tell application "Terminal" to do script "cd ~/backend && source ~/venv/bin/activate && python3 app.py"'
+osascript -e 'tell application "Terminal" to do script "cd \"$(pwd)/backend\" && source \"$(pwd)/venv/bin/activate\" && python3 app.py"'
 
 echo "Starting frontend server..."
-osascript -e 'tell application "Terminal" to do script "cd ~/frontend && npm start"'
+osascript -e 'tell application "Terminal" to do script "cd \"$(pwd)/frontend\" && npm start"'
 
 echo "Setup complete!"

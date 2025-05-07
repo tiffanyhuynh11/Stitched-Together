@@ -28,9 +28,9 @@ python init_db.py
 cd ..
 
 echo Starting backend server...
-start cmd /k "cd backend && call ..\venv\Scripts\activate && python app.py"
+start cmd /k "cd /d \"%CD%\backend\" && call \"%CD%\venv\Scripts\activate\" && python app.py"
 
 echo Starting frontend server...
-start cmd /k "cd frontend && npm start"
+start cmd /k "cd /d \"%CD%\frontend\" && npm start"
 
 echo Setup complete!
