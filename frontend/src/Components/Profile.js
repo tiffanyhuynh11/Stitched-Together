@@ -38,7 +38,6 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
 
         }) 
             .catch(error => console.error("Error updating profile:", error));
-        onSave && onSave(profile);
   };
 
   const handleDelete = async (userId) => {
