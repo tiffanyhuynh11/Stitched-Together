@@ -42,14 +42,12 @@ const FriendsGraph = ({ user, friends }) => {
   const centerX = width / 2;
   const centerY = height / 2;
   const navigate = useNavigate();
+  const [originalPos, setOriginalPos] = useState({});
 
   const [nodes, setNodes] = useState([]);
   const [connections, setConnections] = useState([]);
-  const [pendingConnection, setPendingConnection] = useState(null);
-  const [input, setInput] = useState('');
-  const [hover, setHover] = useState(null);
 
-  // if the user added friends, randomizes the position of friend bubbles
+  // randomizes the position of friend bubbles
   useEffect(() => {
     if (!Array.isArray(friends) || friends.length === 0 || nodes.length > 0 || !width || !height) return;
 
@@ -70,85 +68,85 @@ const FriendsGraph = ({ user, friends }) => {
   const dragState = useRef(false);
 
   useEffect(() => {
-    if (!Array.isArray(friends) || !user) return;
-
+    if (!Array.isArray(friends)) return;
+  
     const seen = new Set();
     const inferred = [];
-
+  
     for (const friend of friends) {
-      if (!friend.relationship) continue;
-
-      const key = [Math.min(friend.id, user.id), Math.max(friend.id, user.id)].join('-');
-      if (seen.has(key)) continue;
-
-      seen.add(key);
-      inferred.push({
-        fromId: friend.id,
-        toId: user.id,
-        relationship: friend.relationship
-      });
-    }
-
-    for (let i = 0; i < friends.length; i++) {
-      const f1 = friends[i];
-      for (let j = i + 1; j < friends.length; j++) {
-        const f2 = friends[j];
-        if (f1.relationship === '' || !f1.relationship || !f2.relationship) continue;
-        const key = [Math.min(f1.id, f2.id), Math.max(f1.id, f2.id)].join('-');
+      const ids = (friend.relationship || "")
+        .split(",")
+        .map(s => parseInt(s))
+        .filter(Boolean);
+  
+      for (const targetId of ids) {
+        const key = [Math.min(friend.id, targetId), Math.max(friend.id, targetId)].join("-");
         if (seen.has(key)) continue;
         seen.add(key);
         inferred.push({
-          fromId: f1.id,
-          toId: f2.id,
-          relationship: f1.relationship
+          fromId: friend.id,
+          toId: targetId,
         });
       }
     }
-
     setConnections(inferred);
-  }, [friends, user]);
-
+  }, [friends]);
+  
   // Prevent crashing due to undefined fields
   if (!user || !Array.isArray(friends) || !width || !height) return null;
 
-  // This part needs to update the DB
-  const handleSubmit = () => {
-    const { fromId, toId, originIndex } = pendingConnection;
-    const trimmed = input.trim();
-
-    const { x: newX, y: newY } = randomizePosition(nodes, centerX, centerY, width, height);
-
+  const handleSubmit = (fromId, toId, originIndex) => {
+    //returns dragged node back to its OG position
     setNodes(prev => {
       const updated = [...prev];
-      updated[originIndex] = {
-        ...updated[originIndex],
-        relX: newX / width,
-        relY: newY / height
-      };
+      const orig = originalPos[fromId];
+      if (orig) {
+        const index = updated.findIndex(n => n.id === fromId);
+        if (index !== -1) {
+          updated[index] = {
+            ...updated[index],
+            relX: orig.x / width,
+            relY: orig.y / height
+          };
+        }
+      }
       return updated;
     });
-
-    setPendingConnection(null);
-    setInput('');
-
-    //update the DB
+  
+    // updating DB
+    const friend2Id = String(toId);
+    const friend1Id = String(fromId);
+  
     fetch(`/friend/${fromId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ relationship: trimmed }),
+      body: JSON.stringify({ relationship: friend2Id }),
     })
-      .then(() =>
-        fetch(`/friend/${toId}`, {
+      .then(() => {
+        return fetch(`/friend/${toId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ relationship: trimmed }),
-        })
-      )
-      .then(() => {
-        console.log("Relationship save successful.")
+          body: JSON.stringify({ relationship: friend1Id }),
+        });
       })
-      .catch(err => console.error("Error updating profiles:", err));
+      .then(() => {
+        setConnections(prev => {
+          const alreadyExists = prev.some(c =>
+            (c.fromId === fromId && c.toId === toId) ||
+            (c.fromId === toId && c.toId === fromId)
+          );
+          if (alreadyExists) return prev;
+  
+          return [...prev, {
+            fromId,
+            toId,
+            relationship: ''
+          }];
+        });
+      })
+      .catch(err => console.error("Error updating profile:", err));
   };
+  
 
   return (
     <>
@@ -164,11 +162,6 @@ const FriendsGraph = ({ user, friends }) => {
             const y1 = from.relY * height;
             const x2 = to.relX * width;
             const y2 = to.relY * height;
-            const midX = (x1 + x2) / 2;
-            const midY = (y1 + y2) / 2;
-
-            const showLabel =
-              hover === conn.fromId || hover === conn.toId;
 
             return (
               <Group key={`conn-${idx}`}>
@@ -178,18 +171,6 @@ const FriendsGraph = ({ user, friends }) => {
                   strokeWidth={2}
                   dash={[4, 2]}
                 />
-                {showLabel && (
-                  <Text
-                    text={conn.relationship}
-                    x={midX - 50}
-                    y={midY - 10}
-                    width={100}
-                    align="center"
-                    fontSize={12}
-                    fill="#000000"
-                    opacity={0.85}
-                  />
-                )}
               </Group>
             );
           })}
@@ -218,10 +199,8 @@ const FriendsGraph = ({ user, friends }) => {
                 key={`friend-${i}`}
                 x={x}
                 y={y}
-                draggable={!pendingConnection}
+                draggable={true}
                 ref={(el) => (groupRefs.current[i] = el)}
-                onMouseEnter={() => setHover(friend.id)}
-                onMouseLeave={() => setHover(null)}
 
                 // Prevents bubbles from going out-of-bounds
                 dragBoundFunc={(pos) => {
@@ -237,7 +216,12 @@ const FriendsGraph = ({ user, friends }) => {
                   }
                   return { x: boundedX, y: boundedY };
                 }}
-                onDragStart={() => (dragState.current = true)}
+                onDragStart={(e) => {
+                  dragState.current = true;
+                  const { x, y } = e.target.position();
+                  const friendId = nodes[i].id;
+                  setOriginalPos(prev => ({ ...prev, [friendId]: { x, y } }));
+                }}                
                 onDragMove={(e) => {
                   const { x, y } = e.target.position();
                   setNodes((prev) => {
@@ -266,8 +250,7 @@ const FriendsGraph = ({ user, friends }) => {
                     return dist < 2 * FRIEND_RADIUS;
                   });
                   if (overlapped) {
-                    setPendingConnection({ fromId: draggedId, toId: overlapped.id, originIndex: i });
-                    setInput('');
+                    handleSubmit(draggedId, overlapped.id, i);
                   } else {
                     setNodes((prev) => {
                       const updated = [...prev];
@@ -320,61 +303,6 @@ const FriendsGraph = ({ user, friends }) => {
           </Group>
         </Layer>
       </Stage>
-
-      {/*Relationship Prompt*/}
-      {pendingConnection && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(0, 0, 0, 0.4)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <div style={{
-            background: '#fff7f0',
-            padding: '1.5rem 2rem',
-            borderRadius: '12px',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-            textAlign: 'center'
-          }}>
-            <p style={{ marginBottom: '1rem', fontWeight: 'bold' }}>
-              Enter relationship (leave blank to remove or cancel relationship):
-            </p>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              style={{
-                padding: '0.5rem',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                marginBottom: '1rem',
-                width: '100%'
-              }}
-            />
-            <br />
-            <button
-              onClick={handleSubmit}
-              style={{
-                backgroundColor: '#f6b092',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                color: 'white'
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };
