@@ -12,34 +12,38 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
         setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-  const handleSave = (e) => {
+    const handleSave = (e) => {
         e.preventDefault(); // Prevent unintended GET requests
         if (!profile.name) {
             alert("Name cannot be empty!");
             return;
         }
-
+    
         setIsEditing(false);
-        
-        const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile"; // determine route
-
+    
+        const url = add ? "/new-friend" : friendId ? `/friend/${friendId}` : "/profile";
+        const { relationship, ...profileToSend } = profile;
+    
         fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(profile),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profileToSend),
         })
         .then(response => response.json())
         .then(updatedProfile => {
-          console.log("Server response:", updatedProfile)
-          setProfile(updatedProfile); // Update state
-          if (add) {
-            navigate('/my-stitches'); // Redirect after adding new friend
-          }
-
-        }) 
-            .catch(error => console.error("Error updating profile:", error));
-  };
-
+            setProfile(prev => ({
+                ...prev,
+                ...updatedProfile,
+                relationship: prev.relationship
+            }));
+    
+            if (add) {
+                navigate('/my-stitches');
+            }
+        })
+        .catch(error => console.error("Error updating profile:", error));
+    };
+    
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm("Sure you want to remove your friend?");
     if (!confirmDelete) return;
@@ -87,7 +91,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
                             onChange={handleChange}
                             className="w-full p-2 mt-1 border border-peach-500 rounded-md focus:outline-none focus:ring-2 focus:ring-peach-500"
                         />
-                        {!self && (
+                        {!true && (
                             <>
                                 <label className="block font-medium mt-4 text-peach-500">Relationship</label>
                                 <input
@@ -138,7 +142,7 @@ const Profile = ({ data, editable = true, friendId, onSave, self = false, add = 
                         <p className="mb-4 text-gray-700">
                             <strong className="text-peach-500">Birthday:</strong> {profile.birthday}
                         </p>
-                        {!self && (
+                        {!true && (
                             <p className="mb-4 text-gray-700">
                                 <strong className="text-peach-500">Relationship:</strong> {profile.relationship}
                             </p>
