@@ -1,13 +1,36 @@
 @echo off
-REM Create a Python virtual environment
-python -m venv env
 
-REM Activate the virtual environment
-call env\Scripts\activate
+echo Creating virtual environment...
+python -m venv venv
 
-REM Install dependencies from requirements.txt
+echo Installing backend dependencies...
+cd backend
+call ..\venv\Scripts\activate
 pip install -r requirements.txt
+if %errorlevel% neq 0 (
+    echo Backend installation failed.
+    exit /b 1
+)
+cd ..
 
-REM Open two Command Prompt windows for backend and frontend
-start cmd /k "cd /d backend && python app.py"
-start cmd /k "cd /d frontend && npm start"
+echo Installing frontend dependencies...
+cd frontend
+npm install
+if %errorlevel% neq 0 (
+    echo Frontend installation failed.
+    exit /b 1
+)
+cd ..
+
+echo Running database initialization...
+cd backend
+python init_db.py
+cd ..
+
+echo Starting backend server...
+start cmd /k "cd backend && call ..\venv\Scripts\activate && python app.py"
+
+echo Starting frontend server...
+start cmd /k "cd frontend && npm start"
+
+echo Setup complete!
