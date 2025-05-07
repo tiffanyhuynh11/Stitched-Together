@@ -28,3 +28,4 @@ python init_db.py
 cd ..
 
 echo Setup complete! Run front and back ends via terminal!
+REM it works

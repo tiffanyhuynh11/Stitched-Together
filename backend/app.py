@@ -114,7 +114,7 @@ def handleFriend(friend_id):
             WHEN relationship IS NULL THEN ? 
             ELSE relationship || ', ' || ? 
         END, 
-        connection = ?
+        connection = ?,
         so = ?, 
         notes = ?, 
         gifts = ? 
